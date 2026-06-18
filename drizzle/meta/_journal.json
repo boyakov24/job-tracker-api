@@ -8,6 +8,13 @@
       "when": 1781040699968,
       "tag": "0000_flat_thunderball",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781444932791,
+      "tag": "0001_high_banshee",
+      "breakpoints": true
     }
   ]
 }
