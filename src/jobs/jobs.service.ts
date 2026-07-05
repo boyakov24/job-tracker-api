@@ -1,39 +1,43 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { eq, and } from 'drizzle-orm';
+import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
 
 import { DRIZZLE } from '../db/db.module';
-import { jobs } from '../db/schema';
+import * as schema from '../db/schema';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
+import { Job, NewJob } from '../db/schema';
 
 @Injectable()
 export class JobsService {
     constructor(
         @Inject(DRIZZLE) 
-        private readonly db: any,
+        private readonly db: NeonHttpDatabase<typeof schema>,
     ) {}
 
-    async createJob(userId: string, dto: CreateJobDto) {
+    async createJob(userId: string, dto: CreateJobDto): Promise<Job> {
+        const newJob: NewJob = { userId, ...dto };
+
         const [job] = await this.db
-        .insert(jobs)
-        .values({ userId, ...dto })
+        .insert(schema.jobs)
+        .values(newJob)
         .returning();
 
         return job;
     }
 
-    async findAll(userId: string) {
+    async findAll(userId: string): Promise<Job[]> {
         return this.db
         .select()
-        .from(jobs)
-        .where(eq(jobs.userId, userId));
+        .from(schema.jobs)
+        .where(eq(schema.jobs.userId, userId));
     }
 
-    async findOne(userId: string, jobId: string) {
+    async findOne(userId: string, jobId: string): Promise<Job> {
         const [job] = await this.db
         .select()
-        .from(jobs)
-        .where(and(eq(jobs.userId, userId), eq(jobs.id, jobId)));
+        .from(schema.jobs)
+        .where(and(eq(schema.jobs.userId, userId), eq(schema.jobs.id, jobId)));
 
         if (!job) {
             throw new NotFoundException('Job not found');
@@ -42,11 +46,11 @@ export class JobsService {
         return job;
     }
 
-    async updateJob(userId: string, jobId: string, dto: UpdateJobDto) {
+    async updateJob(userId: string, jobId: string, dto: UpdateJobDto): Promise<Job> {
         const [job] = await this.db
-        .update(jobs)
+        .update(schema.jobs)
         .set({...dto})
-        .where(and(eq(jobs.userId, userId), eq(jobs.id, jobId)))
+        .where(and(eq(schema.jobs.userId, userId), eq(schema.jobs.id, jobId)))
         .returning();
 
         if (!job) {
@@ -56,10 +60,10 @@ export class JobsService {
         return job;
     }
 
-    async deleteJob(userId: string, jobId: string) {
+    async deleteJob(userId: string, jobId: string): Promise<Job> {
         const [job] = await this.db
-        .delete(jobs)
-        .where(and(eq(jobs.userId, userId), eq(jobs.id, jobId)))
+        .delete(schema.jobs)
+        .where(and(eq(schema.jobs.userId, userId), eq(schema.jobs.id, jobId)))
         .returning();
 
         if (!job) {

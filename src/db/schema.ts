@@ -14,6 +14,9 @@ export const users = pgTable('users', {
     ...timestamps
 });
 
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+
 export const jobs = pgTable('jobs', {
     id: uuid('id').primaryKey().defaultRandom(),
     userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -25,3 +28,6 @@ export const jobs = pgTable('jobs', {
 }, (table) => [
   index('jobs_user_id_idx').on(table.userId),
 ]);
+
+export type Job = typeof jobs.$inferSelect;
+export type NewJob = typeof jobs.$inferInsert;
