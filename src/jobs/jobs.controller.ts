@@ -1,4 +1,5 @@
 import { Controller, Body, Post, UseGuards, Get, Param, Patch, Delete } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
@@ -7,6 +8,8 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateJobDto } from './dto/update-job.dto';
 import type { User } from '../db/schema';
 
+@ApiTags('Jobs')
+@ApiBearerAuth()
 @Controller('jobs')
 export class JobsController {
   constructor(private readonly jobsService: JobsService) {}
