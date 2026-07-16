@@ -7,6 +7,8 @@ const timestamps = {
 
 export const statusEnum = pgEnum('status', ['applied', 'interview', 'offer', 'rejected']);
 
+export type JobStatus = (typeof statusEnum.enumValues)[number];
+
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().defaultRandom(),
     email: varchar('email', { length: 255 }).notNull().unique(),

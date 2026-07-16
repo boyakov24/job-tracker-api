@@ -1,4 +1,4 @@
-import { Controller, Body, Post, UseGuards, Get, Param, Patch, Delete } from '@nestjs/common';
+import { Controller, Body, Post, UseGuards, Get, Param, Patch, Delete, Query } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 import { JobsService } from './jobs.service';
@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateJobDto } from './dto/update-job.dto';
 import type { User } from '../db/schema';
+import { GetJobsQueryDto } from './dto/get-jobs-query.dto';
 
 @ApiTags('Jobs')
 @ApiBearerAuth()
@@ -22,8 +23,8 @@ export class JobsController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  findAll(@CurrentUser() user: User) {
-    return this.jobsService.findAll(user.id);
+  findAll(@CurrentUser() user: User, @Query() query: GetJobsQueryDto) {
+    return this.jobsService.findAll(user.id, query);
   }
 
   @Get(':id')
