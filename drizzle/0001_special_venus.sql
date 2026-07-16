@@ -1,0 +1,1 @@
+ALTER TABLE "jobs" ADD COLUMN "test_field" varchar(100);

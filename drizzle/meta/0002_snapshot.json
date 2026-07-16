@@ -1,6 +1,6 @@
 {
-  "id": "654a3bdb-2085-4799-8a4c-2592aa365c9f",
-  "prevId": "ef05bf5f-cf9a-428a-b524-c1ffada26a9c",
+  "id": "d0fe7cf1-49f1-4ea6-8937-5caec5c0e3bf",
+  "prevId": "654a3bdb-2085-4799-8a4c-2592aa365c9f",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -44,12 +44,6 @@
         "application_url": {
           "name": "application_url",
           "type": "varchar(1024)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "test_field": {
-          "name": "test_field",
-          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": false
         },
