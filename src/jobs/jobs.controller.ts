@@ -8,33 +8,35 @@ import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateJobDto } from './dto/update-job.dto';
 import type { User } from '../db/schema';
 import { GetJobsQueryDto } from './dto/get-jobs-query.dto';
+import { NotesService } from '../notes/notes.service';
+import { CreateNoteDto } from '../notes/dto/create-note.dto';
 
 @ApiTags('Jobs')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('jobs')
 export class JobsController {
-  constructor(private readonly jobsService: JobsService) {}
+  constructor(
+    private readonly jobsService: JobsService,
+    private readonly notesService: NotesService
+  ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
   createJob(@CurrentUser() user: User, @Body() dto: CreateJobDto) {
     return this.jobsService.createJob(user.id, dto);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   findAll(@CurrentUser() user: User, @Query() query: GetJobsQueryDto) {
     return this.jobsService.findAll(user.id, query);
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
   findOne(@CurrentUser() user: User, @Param('id') jobId: string) {
     return this.jobsService.findOne(user.id, jobId);
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
   updateJob(
     @CurrentUser() user: User, @Param('id') jobId: string, @Body() dto: UpdateJobDto,
   ) {
@@ -42,8 +44,17 @@ export class JobsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
   deleteJob(@CurrentUser() user: User, @Param('id') jobId: string) {
     return this.jobsService.deleteJob(user.id, jobId);
+  }
+
+  @Post(':jobId/notes')
+  createNote(@CurrentUser() user: User, @Param('jobId') jobId: string, @Body() dto: CreateNoteDto) {
+    return this.notesService.createNote(user.id, jobId, dto);
+  }
+
+  @Get(':jobId/notes')
+  findJobNotes(@CurrentUser() user: User, @Param('jobId') jobId: string) {
+    return this.notesService.findAll(user.id, jobId);
   }
 }

@@ -1,5 +1,5 @@
 /* export enum JobSortField {
-  CREATED_AT = 'createdAt',
+    CREATED_AT = 'createdAt',
     COMPANY = 'company',
     POSITION = 'position',
     STATUS = 'status',

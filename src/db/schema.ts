@@ -1,4 +1,4 @@
-import { pgTable, pgEnum, uuid, varchar, timestamp, index } from 'drizzle-orm/pg-core';
+import { pgTable, pgEnum, uuid, varchar, timestamp, index, text } from 'drizzle-orm/pg-core';
 
 const timestamps = {
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -33,3 +33,15 @@ export const jobs = pgTable('jobs', {
 
 export type Job = typeof jobs.$inferSelect;
 export type NewJob = typeof jobs.$inferInsert;
+
+export const notes = pgTable('notes', {
+    id: uuid('id').primaryKey().defaultRandom(),
+    jobId: uuid('job_id').notNull().references(() => jobs.id, { onDelete: 'cascade' }),
+    content: text('content').notNull(),
+    ...timestamps
+}, (table) => [
+  index('notes_job_id_idx').on(table.jobId),
+]);
+
+export type Note = typeof notes.$inferSelect;
+export type NewNote = typeof notes.$inferInsert;
