@@ -1,0 +1,1 @@
+ALTER TABLE "reminders" ADD CONSTRAINT "reminders_note_id_unique" UNIQUE("note_id");

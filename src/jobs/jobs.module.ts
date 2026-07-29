@@ -7,5 +7,6 @@ import { NotesModule } from '../notes/notes.module';
   imports: [NotesModule],
   controllers: [JobsController],
   providers: [JobsService],
+  exports: [JobsService],
 })
 export class JobsModule {}

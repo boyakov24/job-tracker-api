@@ -10,6 +10,7 @@ import type { User } from '../db/schema';
 import { GetJobsQueryDto } from './dto/get-jobs-query.dto';
 import { NotesService } from '../notes/notes.service';
 import { CreateNoteDto } from '../notes/dto/create-note.dto';
+import { IsNotEmptyObjectPipe } from '../pipes/empty-body-validation.pipe';
 
 @ApiTags('Jobs')
 @ApiBearerAuth()
@@ -18,7 +19,7 @@ import { CreateNoteDto } from '../notes/dto/create-note.dto';
 export class JobsController {
   constructor(
     private readonly jobsService: JobsService,
-    private readonly notesService: NotesService
+    private readonly notesService: NotesService,
   ) {}
 
   @Post()
@@ -38,8 +39,7 @@ export class JobsController {
 
   @Patch(':id')
   updateJob(
-    @CurrentUser() user: User, @Param('id') jobId: string, @Body() dto: UpdateJobDto,
-  ) {
+    @CurrentUser() user: User, @Param('id') jobId: string, @Body(new IsNotEmptyObjectPipe()) dto: UpdateJobDto) {
     return this.jobsService.updateJob(user.id, jobId, dto);
   }
 

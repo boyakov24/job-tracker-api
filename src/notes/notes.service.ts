@@ -11,7 +11,8 @@ import { Note, NewNote } from '../db/schema';
 @Injectable()
 export class NotesService {
     constructor(
-      @Inject(DRIZZLE) private readonly db: NeonHttpDatabase
+      @Inject(DRIZZLE) 
+      private readonly db: NeonHttpDatabase<typeof schema>,
     ) {}
 
     async createNote(userId: string, jobId: string, dto: CreateNoteDto): Promise<Note> {
@@ -66,7 +67,7 @@ export class NotesService {
         const [job] = await this.db
         .select()
         .from(schema.jobs)
-        .where(and(eq(schema.jobs.id, jobId), eq(schema.jobs.userId, userId)));
+        .where(and(eq(schema.jobs.userId, userId), eq(schema.jobs.id, jobId)));
 
         if (!job) {
             throw new NotFoundException('Job not found');

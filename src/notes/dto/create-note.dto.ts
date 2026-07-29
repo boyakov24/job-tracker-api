@@ -6,8 +6,8 @@ export class CreateNoteDto {
         example: 'Prepare for the technical interview',
         description: 'Content of the note',
     })
-    @IsString()
     @IsNotEmpty()
+    @IsString()
     @MaxLength(5000)
     content!: string;
 }
