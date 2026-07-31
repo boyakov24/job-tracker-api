@@ -1,12 +1,13 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { NeonHttpDatabase } from 'drizzle-orm/neon-http';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, isNull, lte } from 'drizzle-orm';
 
 import { DRIZZLE } from '../db/db.module';
 import * as schema from '../db/schema';
 import { CreateReminderDto } from './dto/create-reminder.dto';
 import { UpdateReminderDto } from './dto/update-reminder.dto';
 import { Reminder, NewReminder } from '../db/schema';
+import { PendingReminder } from './types/pending-reminder.type';
 
 @Injectable()
 export class RemindersService {
@@ -116,5 +117,37 @@ export class RemindersService {
     }
 
     return result.reminders;
+  }
+
+  async findPendingReminders(): Promise<PendingReminder[]> {
+    const now = new Date();
+
+    return await this.db
+      .select({
+        reminderId: schema.reminders.id,
+        email: schema.users.email,
+        company: schema.jobs.company,
+        position: schema.jobs.position,
+        note: schema.notes.content,
+      })
+      .from(schema.reminders)
+      .innerJoin(schema.notes, eq(schema.reminders.noteId, schema.notes.id))
+      .innerJoin(schema.jobs, eq(schema.notes.jobId, schema.jobs.id))
+      .innerJoin(schema.users, eq(schema.jobs.userId, schema.users.id))
+      .where(
+        and(
+          isNull(schema.reminders.sentAt),
+          lte(schema.reminders.remindAt, now),
+        ),
+      );
+  }
+
+  async markAsSent(reminderId: string): Promise<void> {
+    await this.db
+      .update(schema.reminders)
+      .set({
+        sentAt: new Date(),
+      })
+      .where(eq(schema.reminders.id, reminderId));
   }
 }
