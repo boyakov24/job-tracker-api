@@ -7,7 +7,12 @@ import {
   Body,
   Delete,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
 import { RemindersService } from './reminders.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -23,11 +28,15 @@ import { IsNotEmptyObjectPipe } from '../pipes/empty-body-validation.pipe';
 export class RemindersController {
   constructor(private readonly remindersService: RemindersService) {}
 
+  @ApiOperation({ summary: 'Get a specific reminder by ID' })
+  @ApiResponse({ status: 200, description: 'Reminder retrieved successfully' })
   @Get(':reminderId')
   findOne(@CurrentUser() user: User, @Param('reminderId') reminderId: string) {
     return this.remindersService.findReminder(user.id, reminderId);
   }
 
+  @ApiOperation({ summary: 'Update a specific reminder by ID' })
+  @ApiResponse({ status: 200, description: 'Reminder updated successfully' })
   @Patch(':reminderId')
   updateReminder(
     @CurrentUser() user: User,
@@ -37,6 +46,8 @@ export class RemindersController {
     return this.remindersService.updateReminder(user.id, reminderId, dto);
   }
 
+  @ApiOperation({ summary: 'Delete a specific reminder by ID' })
+  @ApiResponse({ status: 200, description: 'Reminder deleted successfully' })
   @Delete(':reminderId')
   deleteReminder(
     @CurrentUser() user: User,
