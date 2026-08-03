@@ -4,6 +4,14 @@ Backend app for tracking a job search process
 
 The project allows ussers create job vacancies, track their status, add notes and set reminders. When the reminder time arrives user gets an email with the content of the note.
 
+## Live Demo
+
+API:
+https://job-tracker-api-g0bn.onrender.com
+
+Swagger:
+https://job-tracker-api-g0bn.onrender.com/api
+
 ## Features
 
 - User registration and authentication with JWT
